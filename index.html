@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лексические ошибки ЕГЭ — Тренажер</title>
+    <style>
+        :root {
+            --bg-primary: #f5f1e8;
+            --bg-secondary: #ebe5d6;
+            --bg-card: #ffffff;
+            --text-primary: #2c2c2c;
+            --text-secondary: #5a5a5a;
+            --accent: #8b7355;
+            --accent-hover: #6d5a43;
+            --success: #7a9b76;
+            --error: #b85c5c;
+            --warning: #d4a574;
+            --border: #d4cfc0;
+            --shadow: rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Timer */
+        .timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-card);
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px var(--shadow);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent);
+            z-index: 100;
+        }
+
+        .timer.warning {
+            color: var(--warning);
+        }
+
+        .timer.danger {
+            color: var(--error);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px var(--shadow);
+        }
+
+        /* Start Screen */
+        .start-screen {
+            text-align: center;
+        }
+
+        .start-screen h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .start-screen p {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+        }
+
+        .info-list {
+            text-align: left;
+            margin: 30px 0;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+        }
+
+        .info-list li {
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+            padding-left: 10px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        .btn:focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        /* Progress */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        /* Question */
+        .question-card {
+            margin-bottom: 30px;
+        }
+
+        .question-number {
+            color: var(--accent);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        .sentence {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .word {
+            display: inline-block;
+            padding: 4px 8px;
+            margin: 2px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .word:hover {
+            background: var(--bg-card);
+            border-color: var(--accent);
+        }
+
+        .word.selected {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .word.correct {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .word.incorrect {
+            background: var(--error);
+            color: white;
+            border-color: var(--error);
+        }
+
+        /* Feedback */
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback.correct {
+            background: rgba(122, 155, 118, 0.1);
+            border-left: 4px solid var(--success);
+        }
+
+        .feedback.incorrect {
+            background: rgba(184, 92, 92, 0.1);
+            border-left: 4px solid var(--error);
+        }
+
+        .feedback h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .feedback.correct h3 {
+            color: var(--success);
+        }
+
+        .feedback.incorrect h3 {
+            color: var(--error);
+        }
+
+        .feedback p {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .feedback strong {
+            color: var(--text-primary);
+        }
+
+        /* Results */
+        .results-screen {
+            text-align: center;
+        }
+
+        .results-screen h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            margin: 30px auto;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .score-circle.excellent {
+            background: var(--success);
+        }
+
+        .score-circle.good {
+            background: var(--accent);
+        }
+
+        .score-circle.needs-work {
+            background: var(--warning);
+        }
+
+        .score-circle.poor {
+            background: var(--error);
+        }
+
+        .results-details {
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .result-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-item.correct {
+            border-left: 4px solid var(--success);
+        }
+
+        .result-item.incorrect {
+            border-left: 4px solid var(--error);
+        }
+
+        .result-status {
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .result-status.correct {
+            background: var(--success);
+            color: white;
+        }
+
+        .result-status.incorrect {
+            background: var(--error);
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .timer {
+                top: 10px;
+                right: 10px;
+                padding: 8px 14px;
+                font-size: 1rem;
+            }
+
+            .sentence {
+                padding: 15px;
+                font-size: 1rem;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 14px 20px;
+            }
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+        // === CONSTANTS ===
+        const TIMER_DURATION = 15 * 60; // 15 минут в секундах
+        
+        // Задания от простого к сложному
+        const QUESTIONS = [
+            {
+                id: 1,
+                difficulty: 'Простое',
+                sentence: 'Свободная вакансия менеджера открыта в нашей компании.',
+                correctWord: 'вакансия',
+                errorType: 'Тавтология',
+                explanation: 'Слово "вакансия" уже означает "свободное, незамещённое место". Сочетание "свободная вакансия" содержит избыточность (плеоназм). Правильно: "вакансия менеджера открыта".',
+                words: ['Свободная', 'вакансия', 'менеджера', 'открыта', 'в', 'нашей', 'компании']
+            },
+            {
+                id: 2,
+                difficulty: 'Простое',
+                sentence: 'Он подарил ей памятный сувенир на день рождения.',
+                correctWord: 'памятный',
+                errorType: 'Плеоназм',
+                explanation: 'Сувенир — это предмет на память. Слово "памятный" избыточно, так как дублирует значение слова "сувенир". Правильно: "подарил сувенир".',
+                words: ['Он', 'подарил', 'ей', 'памятный', 'сувенир', 'на', 'день', 'рождения']
+            },
+            {
+                id: 3,
+                difficulty: 'Простое',
+                sentence: 'Учёные отметили высокий коэффициент рождаемости.',
+                correctWord: 'высокий',
+                errorType: 'Нарушение лексической сочетаемости',
+                explanation: 'Коэффициент может быть "большим" или "малым", но не "высоким" или "низким". Правильно: "большой коэффициент рождаемости".',
+                words: ['Учёные', 'отметили', 'высокий', 'коэффициент', 'рождаемости']
+            },
+            {
+                id: 4,
+                difficulty: 'Среднее',
+                sentence: 'Презентабельный вид кандидата произвёл хорошее впечатление.',
+                correctWord: 'Презентабельный',
+                errorType: 'Употребление слова в несвойственном значении',
+                explanation: 'Слово "презентабельный" означает "способный презентовать, представлять", а не "имеющий презентабельный (представительный) вид". Правильно: "Представительный вид кандидата".',
+                words: ['Презентабельный', 'вид', 'кандидата', 'произвёл', 'хорошее', 'впечатление']
+            },
+            {
+                id: 5,
+                difficulty: 'Среднее',
+                sentence: 'Адресат отправил письмо получателю.',
+                correctWord: 'Адресат',
+                errorType: 'Смешение паронимов',
+                explanation: 'Адресат — тот, кому адресовано (получатель). Адресант — тот, кто отправляет. Здесь перепутаны значения. Правильно: "Адресант отправил письмо адресату".',
+                words: ['Адресат', 'отправил', 'письмо', 'получателю']
+            },
+            {
+                id: 6,
+                difficulty: 'Среднее',
+                sentence: 'Студент бил баклуши всю ночь перед экзаменом.',
+                correctWord: 'бил',
+                errorType: 'Неверное использование фразеологизма',
+                explanation: 'Фразеологизм "бить баклуши" означает "бездельничать, лениться", а не "усердно работать". В контексте подготовки к экзамену это неуместно. Правильно: "усердно готовился".',
+                words: ['Студент', 'бил', 'баклуши', 'всю', 'ночь', 'перед', 'экзаменом']
+            },
+            {
+                id: 7,
+                difficulty: 'Сложное',
+                sentence: 'Автор использует экспрессивную лексику для создания научного стиля.',
+                correctWord: 'экспрессивную',
+                errorType: 'Нарушение стилевой принадлежности',
+                explanation: 'Экспрессивная (эмоционально окрашенная) лексика не характерна для научного стиля, который требует нейтральности и точности. Здесь противоречие в определении.',
+                words: ['Автор', 'использует', 'экспрессивную', 'лексику', 'для', 'создания', 'научного', 'стиля']
+            },
+            {
+                id: 8,
+                difficulty: 'Сложное',
+                sentence: 'Очи очитали древние рукописи при свете свечей.',
+                correctWord: 'очитали',
+                errorType: 'Употребление устаревшей лексики',
+                explanation: 'Слово "очи" (глаза) и форма "очитали" — устаревшие. В современном тексте это создаёт стилистический диссонанс. Правильно: "Глаза читали" или перестроить предложение.',
+                words: ['Очи', 'очитали', 'древние', 'рукописи', 'при', 'свете', 'свечей']
+            },
+            {
+                id: 9,
+                difficulty: 'Сложное',
+                sentence: 'Самая главная суть проблемы заключается в её актуальности.',
+                correctWord: 'главная',
+                errorType: 'Тавтология',
+                explanation: '"Суть" уже означает главное, основное содержание. "Самая главная суть" — избыточное выражение. Правильно: "Суть проблемы" или "Главное в проблеме".',
+                words: ['Самая', 'главная', 'суть', 'проблемы', 'заключается', 'в', 'её', 'актуальности']
+            },
+            {
+                id: 10,
+                difficulty: 'Очень сложное',
+                sentence: 'Компания преуспела в достижении своих амбициозных целей и задач.',
+                correctWord: 'амбициозных',
+                errorType: 'Нарушение лексической сочетаемости',
+                explanation: 'Слово "амбициозный" в русском языке имеет негативную окраску (чрезмерно честолюбивый). В позитивном контексте лучше использовать "масштабные", "значительные". Также "цели и задачи" — частичный плеоназм.',
+                words: ['Компания', 'преуспела', 'в', 'достижении', 'своих', 'амбициозных', 'целей', 'и', 'задач']
+            }
+        ];
+
+        // === STATE ===
+        let state = {
+            screen: 'start', // start, quiz, results
+            currentQuestion: 0,
+            selectedWord: null,
+            answers: [], // { questionId, correct: boolean, selectedWord }
+            timeLeft: TIMER_DURATION,
+            timerId: null,
+            quizStarted: false
+        };
+
+        // === RENDER FUNCTIONS ===
+        
+        function render() {
+            const app = document.getElementById('app');
+            app.innerHTML = '';
+
+            switch (state.screen) {
+                case 'start':
+                    renderStartScreen(app);
+                    break;
+                case 'quiz':
+                    renderQuizScreen(app);
+                    break;
+                case 'results':
+                    renderResultsScreen(app);
+                    break;
+            }
+        }
+
+        function renderStartScreen(container) {
+            const html = `
+                <div class="container">
+                    <div class="header">
+                        <h1>Лексические ошибки ЕГЭ</h1>
+                        <p>Интерактивный тренажер для 10 класса</p>
+                    </div>
+                    <div class="card start-screen">
+                        <h2>Добро пожаловать!</h2>
+                        <p>Этот тренажер поможет вам научиться находить и исправлять лексические ошибки в текстах.</p>
+                        
+                        <div class="info-list">
+                            <ul>
+                                <li><strong>10 заданий</strong> — от простых к сложным</li>
+                                <li><strong>15 минут</strong> на выполнение всех заданий</li>
+                                <li><strong>Развернутая обратная связь</strong> после каждого ответа</li>
+                                <li><strong>Типы ошибок:</strong> тавтология, плеоназм, нарушение сочетаемости, смешение паронимов и другие</li>
+                            </ul>
+                        </div>
+
+                        <p style="margin-bottom: 30px; color: var(--text-secondary);">
+                            В каждом задании вам нужно кликнуть на слово, содержащее лексическую ошибку.
+                        </p>
+
+                        <button class="btn btn-primary" id="startBtn" aria-label="Начать тест">
+                            Начать тест
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+
+            document.getElementById('startBtn').addEventListener('click', startQuiz);
+        }
+
+        function renderQuizScreen(container) {
+            const question = QUESTIONS[state.currentQuestion];
+            const progress = ((state.currentQuestion) / QUESTIONS.length) * 100;
+            
+            const html = `
+                <div class="timer ${getTimeClass()}" id="timer" aria-live="polite">
+                    ${formatTime(state.timeLeft)}
+                </div>
+                <div class="container">
+                    <div class="progress-text">
+                        Задание ${state.currentQuestion + 1} из ${QUESTIONS.length}
+                    </div>
+                    <div class="progress-bar" role="progressbar" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                    
+                    <div class="card question-card">
+                        <div class="question-number">Задание ${state.currentQuestion + 1} • ${question.difficulty}</div>
+                        <div class="question-text">
+                            Найдите слово с лексической ошибкой:
+                        </div>
+                        <div class="sentence" id="sentence">
+                            ${question.words.map((word, idx) => 
+                                `<span class="word" data-word="${word}" data-index="${idx}" tabindex="0" role="button">${word}</span>`
+                            ).join(' ')}
+                        </div>
+                        
+                        <div id="feedback"></div>
+                        
+                        <div id="nextBtnContainer" class="hidden" style="text-align: center; margin-top: 20px;">
+                            <button class="btn btn-primary" id="nextBtn">
+                                ${state.currentQuestion < QUESTIONS.length - 1 ? 'Следующее задание' : 'Завершить тест'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+
+            // Обработчики кликов на слова
+            document.querySelectorAll('.word').forEach(wordEl => {
+                wordEl.addEventListener('click', () => handleWordClick(wordEl));
+                wordEl.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleWordClick(wordEl);
+                    }
+                });
+            });
+
+            // Кнопка "Далее"
+            const nextBtn = document.getElementById('nextBtn');
+            if (nextBtn) {
+                nextBtn.addEventListener('click', nextQuestion);
+            }
+        }
+
+        function renderResultsScreen(container) {
+            const correctCount = state.answers.filter(a => a.correct).length;
+            const percentage = Math.round((correctCount / QUESTIONS.length) * 100);
+            const scoreClass = getScoreClass(percentage);
+
+            const html = `
+                <div class="container">
+                    <div class="card results-screen">
+                        <h2>Тест завершён!</h2>
+                        <div class="score-circle ${scoreClass}">
+                            ${correctCount}/${QUESTIONS.length}
+                        </div>
+                        <p style="font-size: 1.3rem; margin-bottom: 10px;">
+                            ${getResultsMessage(percentage)}
+                        </p>
+                        <p style="color: var(--text-secondary); margin-bottom: 30px;">
+                            Правильных ответов: ${correctCount} из ${QUESTIONS.length} (${percentage}%)
+                        </p>
+
+                        <div class="results-details">
+                            ${state.answers.map((answer, idx) => {
+                                const question = QUESTIONS[idx];
+                                return `
+                                    <div class="result-item ${answer.correct ? 'correct' : 'incorrect'}">
+                                        <div>
+                                            <strong>Задание ${idx + 1}:</strong> ${question.errorType}
+                                        </div>
+                                        <span class="result-status ${answer.correct ? 'correct' : 'incorrect'}">
+                                            ${answer.correct ? 'Верно' : 'Неверно'}
+                                        </span>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+
+                        <button class="btn btn-primary" id="restartBtn" style="margin-top: 20px;">
+                            Пройти ещё раз
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+
+            document.getElementById('restartBtn').addEventListener('click', restartQuiz);
+        }
+
+        // === HANDLERS ===
+
+        function startQuiz() {
+            state.screen = 'quiz';
+            state.currentQuestion = 0;
+            state.answers = [];
+            state.timeLeft = TIMER_DURATION;
+            state.quizStarted = true;
+            startTimer();
+            render();
+        }
+
+        function handleWordClick(wordEl) {
+            if (state.selectedWord !== null) return; // Уже выбрано
+
+            const question = QUESTIONS[state.currentQuestion];
+            const selectedWord = wordEl.getAttribute('data-word');
+            const isCorrect = selectedWord === question.correctWord;
+
+            state.selectedWord = selectedWord;
+            state.answers.push({
+                questionId: question.id,
+                correct: isCorrect,
+                selectedWord: selectedWord
+            });
+
+            // Визуальная обратная связь
+            if (isCorrect) {
+                wordEl.classList.add('correct');
+            } else {
+                wordEl.classList.add('incorrect');
+                // Показать правильный ответ
+                document.querySelectorAll('.word').forEach(el => {
+                    if (el.getAttribute('data-word') === question.correctWord) {
+                        el.classList.add('correct');
+                    }
+                });
+            }
+
+            // Показать объяснение
+            showFeedback(isCorrect, question);
+
+            // Показать кнопку "Далее"
+            document.getElementById('nextBtnContainer').classList.remove('hidden');
+        }
+
+        function showFeedback(isCorrect, question) {
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = `
+                <div class="feedback ${isCorrect ? 'correct' : 'incorrect'}">
+                    <h3>${isCorrect ? '✓ Правильно!' : '✗ Неверно'}</h3>
+                    <p><strong>Тип ошибки:</strong> ${question.errorType}</p>
+                    <p><strong>Объяснение:</strong> ${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        function nextQuestion() {
+            if (state.currentQuestion < QUESTIONS.length - 1) {
+                state.currentQuestion++;
+                state.selectedWord = null;
+                render();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            stopTimer();
+            state.screen = 'results';
+            render();
+        }
+
+        function restartQuiz() {
+            state = {
+                screen: 'start',
+                currentQuestion: 0,
+                selectedWord: null,
+                answers: [],
+                timeLeft: TIMER_DURATION,
+                timerId: null,
+                quizStarted: false
+            };
+            render();
+        }
+
+        // === TIMER ===
+
+        function startTimer() {
+            state.timerId = setInterval(() => {
+                state.timeLeft--;
+                updateTimerDisplay();
+
+                if (state.timeLeft <= 0) {
+                    finishQuiz();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (state.timerId) {
+                clearInterval(state.timerId);
+                state.timerId = null;
+            }
+        }
+
+        function updateTimerDisplay() {
+            const timerEl = document.getElementById('timer');
+            if (timerEl) {
+                timerEl.textContent = formatTime(state.timeLeft);
+                timerEl.className = `timer ${getTimeClass()}`;
+            }
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function getTimeClass() {
+            if (state.timeLeft <= 60) return 'danger';
+            if (state.timeLeft <= 180) return 'warning';
+            return '';
+        }
+
+        // === HELPERS ===
+
+        function getScoreClass(percentage) {
+            if (percentage >= 90) return 'excellent';
+            if (percentage >= 70) return 'good';
+            if (percentage >= 50) return 'needs-work';
+            return 'poor';
+        }
+
+        function getResultsMessage(percentage) {
+            if (percentage >= 90) return 'Отличный результат! Вы прекрасно разбираетесь в лексических ошибках.';
+            if (percentage >= 70) return 'Хороший результат! Есть небольшие пробелы, но в целом всё отлично.';
+            if (percentage >= 50) return 'Неплохо, но стоит повторить некоторые темы.';
+            return 'Рекомендуем повторить тему лексических ошибок и попробовать снова.';
+        }
+
+        // === INIT ===
+        render();
+    </script>
+</body>
+</html>
